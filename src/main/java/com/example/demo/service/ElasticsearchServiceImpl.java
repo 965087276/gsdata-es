@@ -47,7 +47,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         // query string查询体
         QueryBuilder queryStringQueryBuilder = this.
-                getQueryStringQuery(paramBody.getTableName(), ElasticsearchUtils.wordRegular(word));
+                getQueryStringQuery(paramBody.getTableName(), word);
 
         // filter 查询体
         QueryBuilder filterQueryBuilder = this.getFilterQuery(paramBody.getFilterCols());

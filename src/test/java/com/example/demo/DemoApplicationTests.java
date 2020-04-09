@@ -18,7 +18,7 @@ public class DemoApplicationTests {
 
     @Test
     public void contextLoads() {
-        SingleTableQueryParam param = new SingleTableQueryParam("student", "中国人", 1, 10);
+        SingleTableQueryParam param = new SingleTableQueryParam("student", "中华，共和国", 1, 10);
 
         param.addFilterCol("level", "3")
              .addSortCols("id", false);
