@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -134,11 +134,16 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
      * @param filterColumnMap 待搜索的字段及其字段值
      * @return
      */
-    private QueryBuilder getFilterQuery(Map<String, String> filterColumnMap) {
+    private QueryBuilder getFilterQuery(Map<String, List<String>> filterColumnMap) {
         if (filterColumnMap == null) return null;
         BoolQueryBuilder filterQueryBuilder = new BoolQueryBuilder();
-        filterColumnMap.forEach((col, val) -> {
-            filterQueryBuilder.must(QueryBuilders.termQuery(col, val));
+        filterColumnMap.forEach((column, values) -> {
+            if (values.size() == 1) {
+                filterQueryBuilder.must(QueryBuilders.termQuery(column, values.get(0)));
+            }
+            else {
+                filterQueryBuilder.must(QueryBuilders.termsQuery(column, values));
+            }
         });
         return filterQueryBuilder;
     }

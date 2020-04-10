@@ -3,7 +3,9 @@ package com.example.demo.entity;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,9 +36,9 @@ public class SingleTableQueryParam {
 
     /**
      * 根据哪些字段对结果进行过滤（如要根据 ORGID 字段过滤）。
-     * map中key、value分别为 字段名（必须用小写）、字段值
+     * map中key、value分别为 字段名（必须用小写）、字段值（字段值可以有多个，会匹配这这多个中的任意一个）
      */
-    private Map<String, String> filterCols;
+    private Map<String, List<String>> filterCols;
 
     /**
      * 根据哪些字段对结果进行排序（如要根据 date 字段过滤）。
@@ -59,7 +61,7 @@ public class SingleTableQueryParam {
     }
 
     /**
-     * 添加过滤字段
+     * 添加过滤字段 （字段值只有一个的情况）
      * @param column 字段名（必须为小写）
      * @param value  字段值
      * @return
@@ -70,7 +72,23 @@ public class SingleTableQueryParam {
             return this;
         }
         if (filterCols == null) filterCols = new HashMap<>();
-        filterCols.put(column.toLowerCase(), value);
+        filterCols.put(column.toLowerCase(), Arrays.asList(value));
+        return this;
+    }
+
+    /**
+     * 添加过滤字段 （字段值有多个的情况）
+     * @param column 字段名（必须为小写）
+     * @param values  字段值列表
+     * @return
+     */
+    public SingleTableQueryParam addFilterCol(String column, List<String> values) {
+        // 忽略空字段
+        if (StrUtil.isBlank(column) || values == null || values.size() == 0) {
+            return this;
+        }
+        if (filterCols == null) filterCols = new HashMap<>();
+        filterCols.put(column.toLowerCase(), values);
         return this;
     }
 
