@@ -40,10 +40,10 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         String word = ElasticsearchUtils.wordRegular(paramBody.getWord());
 
-        // 待搜索文本为空字符串，直接返回
-        if (StrUtil.isBlank(word)) {
-            return SingleTableQueryResult.NO_RESULT;
-        }
+//        // 待搜索文本为空字符串，直接返回
+//        if (StrUtil.isBlank(word)) {
+//            return SingleTableQueryResult.NO_RESULT;
+//        }
 
         // query string查询体
         QueryBuilder queryStringQueryBuilder = this.
@@ -53,8 +53,10 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         QueryBuilder filterQueryBuilder = this.getFilterQuery(paramBody.getFilterCols());
 
         // 主查询体，由query string查询体和filter查询体组成
-        BoolQueryBuilder totalQuery = QueryBuilders.boolQuery()
-                .must(queryStringQueryBuilder);
+        BoolQueryBuilder totalQuery = QueryBuilders.boolQuery();
+        if (StrUtil.isNotBlank(word)) {
+            totalQuery.must(queryStringQueryBuilder);
+        }
         if (filterQueryBuilder != null)
             totalQuery.filter(filterQueryBuilder);
 
